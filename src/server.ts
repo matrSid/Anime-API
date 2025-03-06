@@ -13,7 +13,7 @@ const PORT = process.env.PORT ?? 3001;
 app.use(cors());
 
 //middlewares
-app.use(limiter);
+//app.use(limiter);
 
 // router
 app.use("/", router);
