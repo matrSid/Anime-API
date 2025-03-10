@@ -9,12 +9,17 @@ config(); // dotenv
 const app = express();
 const PORT = process.env.PORT ?? 3001;
 
-// Enable CORS - Allow all origins
+// Enable CORS - Allow all origins with more explicit configuration
 app.use(cors({
-  origin: '*',
+  origin: true, // Allow all origins
+  credentials: true, // Allow credentials
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  exposedHeaders: ['Access-Control-Allow-Origin']
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 
 //middlewares
 //app.use(limiter);
