@@ -2,24 +2,31 @@ import express from "express";
 import { config } from "dotenv";
 import { limiter } from "./middlewares/rateLimit";
 import { router } from "./routes/routes";
-import cors from "cors"; // <-- import cors here
+import cors from "cors";
 
 config(); // dotenv
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
 
-// Enable CORS - Allow all origins with more explicit configuration
+// Enable CORS - Allow all origins with maximum permissiveness
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
+
 app.use(cors({
-  origin: true, // Allow all origins
-  credentials: true, // Allow credentials
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
-  exposedHeaders: ['Access-Control-Allow-Origin']
+  credentials: true
 }));
-
-// Handle preflight requests
-app.options('*', cors());
 
 //middlewares
 //app.use(limiter);
